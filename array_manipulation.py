@@ -25,7 +25,7 @@ def subArray(mylist):
                largestidx= [i,j]
     print('largest sub array is: ', mylist[largestidx[0]:largestidx[1]],' and sum is ',largestSum )
 
-    return sortFunction(newlist)[0]
+    #return sortFunction(newlist)[0]
 
 
 
@@ -55,7 +55,7 @@ def sumSubArray(arr):
         sum+=arr[i]
     return sum
 
-#def subArray(my)
+
 if __name__ == "__main__":
 
     mylist = [-10,13,99,-7,9,21]
