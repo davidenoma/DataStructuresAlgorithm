@@ -67,4 +67,5 @@ print(data.values)
 print(data.values[0])
 print(data.T)
 
-#using
+#using the iloc for indexing pandas aray
+print(data.iloc[:3,:2])
