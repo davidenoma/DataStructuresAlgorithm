@@ -69,3 +69,15 @@ print(data.T)
 
 #using the iloc for indexing pandas aray
 print(data.iloc[:3,:2])
+#using the explicit indexes
+print(data.loc[:'Illinois',:'pop'])
+#ix is a hybrid of these approaches
+#not sure if present in 3.9
+#print(data.ix[:3,:'pop'])
+#masking can be combined with loc indexing
+print(data)
+print(data.loc[data.density > 0.002 , ['pop','density']])
+
+#assigning values
+data.iloc[1,0] = 4859382
+print(data)
