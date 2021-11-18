@@ -1,4 +1,6 @@
 #Tutorials from Python Data Science Handbook.
+from timeit import timeit
+
 import pandas as pd
 import numpy as np
 
@@ -81,3 +83,137 @@ print(data.loc[data.density > 0.002 , ['pop','density']])
 #assigning values
 data.iloc[1,0] = 4859382
 print(data)
+#additional indexing conventions
+print(data['Florida':'Illinois'])
+
+print(data[1:3])
+print(data[data.density > 0.002])
+
+#Ufuncs
+rng = np.random.RandomState(42)
+ser = pd.Series(rng.randint(0,10,4))
+print(ser)
+df = pd.DataFrame(rng.randint(0,10,(3,4)),
+                  columns=['A','B','C','D'])
+print(df)
+print(np.exp(ser))
+
+print(np.sin(df * np.pi / 4))
+
+area = pd.Series({'Alaska': 1723337, 'Texas': 695662,
+'California': 423967}, name='area')
+population = pd.Series({'California': 38332521, 'Texas': 26448193,
+'New York': 19651127}, name='population')
+print(population/area)
+print(area.index | population.index)
+
+A = pd.Series([2, 4, 6], index=[0, 1, 2])
+B = pd.Series([1, 3, 5], index=[1, 2, 3])
+print(A.__add__(B))
+print(A.__add__(B))
+
+#Index alignmen in DataFrame
+A = pd.DataFrame(rng.randint(0, 20, (2, 2)),
+columns=list('AB'))
+print(A)
+B = pd.DataFrame(rng.randint(0, 10, (3, 3)),
+columns=list('BAC'))
+print(A+B)
+#there are other pandas methods such as sub() and mul()
+
+#HANDLING MISSING DATA
+vals1 = np.array([1,None,3,4])
+print(vals1)
+
+for dtype in ['object','int']:
+    print("dtype = ",dtype)
+   # %timeit np.arange(1E6,dtype=dtype).sum()
+    print()
+data = pd.Series([1,np.nan,2,None])
+
+#operation on null values.
+
+print(data.isnull())
+print(data[data.notnull()])
+print(data.dropna())
+
+df = pd.DataFrame([[1, np.nan, 2],
+[2, 3, 5],
+[np.nan, 4, 6]])
+print(df.dropna())
+print(df.dropna(axis='columns'))
+df.dropna(axis='columns', how='all')
+df.dropna(axis='rows', thresh=3)
+
+#Fill NA values
+data = pd.Series([1, np.nan, 2, None, 3], index=list('abcde'))
+print(data)
+data.fillna(0)
+data.fillna(method='ffill')
+data.fillna(method='bfill')
+
+#Hierarchical indexing
+index = [('California', 2000), ('California', 2010),
+('New York', 2000), ('New York', 2010),
+('Texas', 2000), ('Texas', 2010)]
+populations = [33871648, 37253956,
+18976457, 19378102,
+20851820, 25145561]
+pop = pd.Series(populations, index=index)
+print(pop)
+
+#Pandas multi-index
+#pandas multi=index type
+index = pd.MultiIndex.from_tuples(index)
+print(index)
+pop = pop.reindex(index)
+print(pop)
+
+print(pop[:,2010])
+pop_df = pop.unstack()
+print(pop_df)
+pop_df = pd.DataFrame({'total': pop,
+'under18': [9267089, 9284094,
+4687374, 4318033,
+5906301, 6879014]})
+print(pop_df)
+f_u18 = pop_df['under18']/pop_df['total']
+print(f_u18)
+print(f_u18.unstack())
+#multiindex creation
+df = pd.DataFrame(np.random.rand(4, 2),
+index=[['a', 'a', 'b', 'b'], [1, 2, 1, 2]],
+columns=['data1', 'data2'])
+print(df)
+#Explicit muliindex constructors
+pd.MultiIndex.from_arrays([['a', 'a', 'b', 'b'], [1, 2, 1, 2]])
+pd.MultiIndex.from_tuples([('a', 1), ('a', 2), ('b', 1), ('b', 2)])
+pd.MultiIndex.from_product([['a', 'b'], [1, 2]])
+
+pop.index.names = ['state','year']
+print(pop)
+#Multi-index for columns
+index = pd.MultiIndex.from_product([[2013, 2014], [1, 2]],
+names=['year', 'visit'])
+columns = pd.MultiIndex.from_product([['Bob', 'Guido', 'Sue'], ['HR', 'Temp']],
+names=['subject', 'type'])
+# mock some data
+data = np.round(np.random.randn(4, 6), 1)
+data[:, ::2] *= 10
+data += 37
+# create the DataFrame
+health_data = pd.DataFrame(data, index=index, columns=columns)
+#indexing and slicing a multi-index
+print(pop['California',2010])
+print(pop['California'])
+print(pop.unstack())
+pop.loc['California':'New York']
+pop[:, 2000]
+print(pop[pop > 2200000])
+
+#Multiply indexed DataFrames
+print(index,columns,"\n",health_data,'\n',health_data.unstack())
+print(health_data['Guido','HR'])
+print(health_data.iloc[:2, :2])
+print(health_data.loc[:,('Bob','HR')])
+#Rearranging Multi-Indices
